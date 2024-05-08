@@ -1,2 +1,6 @@
 # python/Django
 venv
+__pycache__
+__init__
+migrations
+db.sqlite3
