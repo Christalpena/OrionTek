@@ -7,5 +7,5 @@ router.register(r'clients',ClientView)
 router.register(r'addresses', AddressView)
 
 urlpatterns = [
-    path('api/v1',include(router.urls))
+    path('api/v1/',include(router.urls))
 ]

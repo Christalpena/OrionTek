@@ -6,8 +6,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 class Client(models.Model):
     name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    email = models.EmailField()
-    phone = PhoneNumberField(null=False, blank=False, unique=True)
+    email = models.EmailField(unique=True)
+    phone = PhoneNumberField(null=False, blank=False, unique=False)
 
     def __str__(self):
         return self.name

@@ -1,0 +1,26 @@
+body{
+    margin: 0%;
+}
+
+form{
+    width: 50%;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: auto;
+    padding-top: 2rem;
+}
+form > div{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.input {
+    width: 45%;
+}
+.clientSection{
+    padding: 2rem 5rem;
+}
+.card{
+    width: 300px;
+}

@@ -1,8 +1,13 @@
-
+import ClientList from "../components/ClientList"
+import { ListClients } from "../api"
 
 const Client = () => {
+    const clients = ListClients()
+
     return(
-        <section>Holaa</section>
+        <section className="clientSection">
+            <ClientList clients={clients} />
+        </section>
     )
 }
 
