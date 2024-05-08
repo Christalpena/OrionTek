@@ -1,11 +1,16 @@
 import {useForm, useFieldArray } from 'react-hook-form'
 import Input from '../components/input'
-import { ListClients, createClient } from '../api'
+import { ListClients, createClient, deleteClient,getClientById, updateClient,createAddresses } from '../api'
+import { Button } from '@mui/material'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect } from 'react'
 
 // eslint-disable-next-line react/prop-types
 const Form = () => {
+    const {id} = useParams()
     const clients = ListClients()
-    const {register,handleSubmit,control} = useForm({defaultValues: {
+    const navigate = useNavigate()
+    const {register,handleSubmit,control,setValue} = useForm({defaultValues: {
         addresses : [{
             address: '',
             apartment: '',
@@ -21,12 +26,33 @@ const Form = () => {
         control
     });
 
+    useEffect(() => {
+        async function loadTask(){
+            if(id){
+                const response = await getClientById(id)
+                console.log(response)
+                setValue('name', response.data.name)
+                setValue('email', response.data.email)
+                setValue('phone', response.data.phone)
+                setValue('last_name', response.data.last_name)
+            }
+        }
+        loadTask()
+    })
+
     const onSubmit = handleSubmit(data => {
-        createClient(data,clients)
+        if(id){
+            updateClient(data,id)
+        }else{
+            createClient(data)
+        }
+        //navigate('/')
     })
 
     return(
-        <form action="" onSubmit={onSubmit}>
+        <section className='formSection'>
+            <h1>CREATE A NEW CLIENT</h1>
+            <form action="" onSubmit={onSubmit}>
             <Input 
             name='name'
             label='Name'
@@ -102,16 +128,25 @@ const Form = () => {
                 label='Zip Code'
                 type='text'
                 />
-                <button type="button" onClick={() => remove(index)}>Remove Address</button>
+                <Button className='removeAddressBtn' variant="contained" color='error' type='button' onClick={() => remove(index)}>Remove Address</Button>
                 </div>
             )
             })}
             
-
-            <button type='button' onClick={() => append({})}>Save Address</button>
+            <div>
+            <Button variant="contained" type='button' onClick={() => append({})}>Add Address</Button>
             
-            <button type='submit'>Create</button>
+            <Button type='submit' variant="contained" color='success' onClick={onSubmit}>Create</Button>
+            </div>
         </form>
+        {id && <Button variant="contained" color='error' onClick={async() => {
+            const yes = window.confirm("are u shure")
+            if(yes){
+                await deleteClient(id)
+                navigate('/')
+            }
+        }}>Delete</Button>}
+        </section>
     )
 }
 

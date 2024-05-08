@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import axios from 'axios'
 import { useState,useEffect } from 'react'
 
@@ -21,7 +22,35 @@ export function ListClients (){
     return clients
 }
 
-export const createClient = async (data,clients) => {
+export const getClientById = (id) => {
+    return clientApi.get(`/${id}`)
+}
+
+export const createClient = async (data) => {
+    const {name,last_name,phone,email} = data
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('last_name', last_name);
+    formData.append('email', email);
+    formData.append('phone', `+${phone}`);
+
+    try {
+        const clientResponse = await clientApi.post('/', formData);
+        const clientId = clientResponse.data.id;
+
+        if (clientId) {
+            createAddresses(data,clientId)
+        } else {
+            throw new Error('No se pudo obtener el ID del cliente');
+        }
+
+        return clientResponse.data; 
+    } catch (error) {
+        throw error;
+    }
+
+}
+export const updateClient = (data,id) => {
     const {name,last_name,phone,email} = data
     const formData = new FormData();
     formData.append('name', name);
@@ -30,9 +59,10 @@ export const createClient = async (data,clients) => {
     formData.append('phone', `+${phone}`);
 
 
-   await clientApi.post('/', formData)
-   createAddresses(data,clients)
-
+   return clientApi.put(`/${id}/`, formData)
+}
+export const deleteClient = (id) => {
+    return clientApi.delete(`/${id}/`)
 }
 
 
@@ -42,8 +72,18 @@ const addressApi = axios.create({
 export const getAllAddresses = () => {
     return addressApi.get('/')
 }
-export const createAddresses = (data,clients) => {
-    console.log(clients)
-    const clientId = clients && clients.find(client => client.email == data.email)?.id
-    console.log(clientId)
+export const createAddresses = (data,id) => {
+    const addresses = data.addresses;
+
+    for(const address of addresses){
+        const formData = new FormData();
+        formData.append('address',address.address)
+        formData.append('apartment',address.apartment)
+        formData.append('city',address.city)
+        formData.append('state',address.state)
+        formData.append('country',address.country)
+        formData.append('zip_code',address.zip_code)
+        formData.append('client',id)
+        addressApi.post('/',formData)
+    }
 }

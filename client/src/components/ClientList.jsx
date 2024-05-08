@@ -1,12 +1,12 @@
 import OutlinedCard from "./Card";
 
 const ClientList = ({ clients }) => {
-    console.log(clients);
     return (
         <section>
             {clients.map((client) => (
                 <OutlinedCard
-                    key={client.id} // Asegúrate de incluir un key único para cada elemento del array
+                    key={client.id}
+                    id={client.id}
                     name={client.name}
                     last_name={client.last_name}
                     email={client.email}
