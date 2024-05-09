@@ -12,9 +12,9 @@ const OutlinedCard= ({name,last_name,phone,email,id}) => {
     console.log(id)
     const navigate = useNavigate()
     return(
-    <Box sx={{ minWidth: 275 }} className='card'>
+    <Box sx={{ minWidth: 275}} >
         <React.Fragment>
-            <Card variant="outlined">
+            <Card variant="outlined" className='card'>
                 <CardContent>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     {phone}

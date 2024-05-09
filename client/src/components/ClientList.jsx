@@ -2,7 +2,7 @@ import OutlinedCard from "./Card";
 
 const ClientList = ({ clients }) => {
     return (
-        <section>
+        <section className="clientSection">
             {clients.map((client) => (
                 <OutlinedCard
                     key={client.id}

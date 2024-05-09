@@ -109,17 +109,18 @@ export const createAddresses = (data,id) => {
         formData.append('country',address.country)
         formData.append('zip_code',address.zip_code)
         formData.append('client',id)
-        addressApi.post('/',formData)
+        return addressApi.post('/',formData)
     }
 }
 
 const updateAddresses = (data,clientId) => {
     const addresses = data.addresses;
 
-    for(const address of addresses){
-        if(address.id){
+    addresses.map((address) => {
+        console.log(address)
+        if(address.addressId){
             const formData = new FormData();
-            formData.append('id',address.id)
+            formData.append('id',address.addressId)
             formData.append('address',address.address)
             formData.append('apartment',address.apartment)
             formData.append('city',address.city)
@@ -127,10 +128,15 @@ const updateAddresses = (data,clientId) => {
             formData.append('country',address.country)
             formData.append('zip_code',address.zip_code)
             formData.append('client',clientId)
-            addressApi.put(`/${address.id}/`,formData)
+            addressApi.put(`/${address.addressId}/`,formData)
         }else{
             createAddresses(data,clientId)
         }
-    }
-}
+    })
 
+    }
+
+
+export const deleteAddress = (addressId) => {
+    return addressApi.delete(`/${addressId}/`)
+}

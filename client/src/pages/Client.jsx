@@ -1,13 +1,13 @@
 import ClientList from "../components/ClientList"
 import { ListClients } from "../api"
 
-const Client = () => {
+const Client = ({setId}) => {
     const clients = ListClients()
-
+    setId(0)
     return(
-        <section className="clientSection">
+        <>
             <ClientList clients={clients} />
-        </section>
+        </>
     )
 }
 

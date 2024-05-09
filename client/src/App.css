@@ -2,6 +2,7 @@ body{
     margin: 0%;
     font-family:sans-serif;
     background-color: #FBF6EE;
+    padding-bottom: 5rem;
 }
 header{
     display: flex;
@@ -28,11 +29,20 @@ form{
     margin: auto;
     gap: 10px;
 }
+
 form > div{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     gap: 10px;
+}
+
+.createBtn{
+    width: 97%;
+}
+
+.createBtn button{
+    width: 48%;
 }
 .input {
     width: 45%;
@@ -42,6 +52,9 @@ form > div{
 }
 .clientSection{
     padding: 2rem 5rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 .card{
     width: 300px;

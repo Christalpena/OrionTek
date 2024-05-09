@@ -1,40 +1,28 @@
 import {useForm, useFieldArray } from 'react-hook-form'
 import Input from '../components/input'
-import { createClient, deleteClient,getClientById, updateClient,LisAddresses } from '../api'
+import { createClient,getClientById, updateClient,LisAddresses, deleteAddress } from '../api'
 import { Button } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 
 // eslint-disable-next-line react/prop-types
-const Form = () => {
+const Form = ({setId}) => {
     const {id} = useParams()
     const addresses = LisAddresses()
+    console.log(id)
     const navigate = useNavigate()
-    const {register,handleSubmit,control,setValue} = useForm()
+    const {register,handleSubmit,control,setValue,reset} = useForm()
 
     const { fields, append, remove } = useFieldArray({
         name: "addresses",
         control
     });
 
-    const addNewAddress = (data) => {
-        console.log(data)
-        data.map((address) => {
-            append({
-                id: address.id,
-                address: address.address,
-                apartment: address.apartment,
-                city: address.city,
-                state: address.state,
-                country: address.country,
-                zip_code: address.zip_code
-            });
-        })
-    };
-
     useEffect(() => {
         async function loadTask(){
+            
             if(id){
+                setId(id)
                 const response = await getClientById(id)
                 console.log(response.data)
                 setValue('name', response.data.name)
@@ -42,11 +30,27 @@ const Form = () => {
                 setValue('phone', response.data.phone)
                 setValue('last_name', response.data.last_name)
                 const clientAddresses = addresses.filter(address => address.client == id)
-                addNewAddress(clientAddresses)
+                reset({data:addresses})
+                await Promise.all(clientAddresses.map(async address => {
+                    await append({
+                        addressId: address.id,
+                        address: address.address,
+                        apartment: address.apartment,
+                        city: address.city,
+                        state: address.state,
+                        country: address.country,
+                        zip_code: address.zip_code
+                    });
+                }));
             }
         }
         loadTask()
-    },[id])
+    },[id,addresses])
+
+    const deleteAddss = (id,index) =>{
+        deleteAddress(id)
+        remove(index)
+    }
 
     const onSubmit = handleSubmit(data => {
         if(id){
@@ -87,7 +91,7 @@ const Form = () => {
             type='number'
             />
             <h1>ADDRESS INFORMATION</h1>
-            {fields && fields.map((addresses,index)=> {
+            {fields.map((addresses,index)=> {
             return(
                 <div key={addresses.id}>
                 <Input
@@ -137,24 +141,24 @@ const Form = () => {
                 label='Zip Code'
                 type='text'
                 />
-                <Button className='deleteBtn' variant="contained" color='error' type='button' onClick={() => remove(index)}>Remove Address</Button>
+                {addresses.addressId ? 
+                <Button className='deleteBtn' variant="contained" color='error' type='button' 
+                onClick={() => deleteAddss(addresses.addressId,index)}>Remove Address</Button>
+                :
+                <Button className='deleteBtn' variant="contained" color='error' type='button' 
+                onClick={() => remove(index)}>Remove Address</Button>
+                }
                 </div>
+
             )
             })}
             
-            <div>
+            <div className='createBtn'>
             <Button variant="contained" type='button' onClick={() => append({})}>Add Address</Button>
             
-            <Button type='submit' variant="contained" color='success' onClick={onSubmit}>Create</Button>
+            <Button type='submit' variant="contained" color='success' onClick={onSubmit}>Save</Button>
             </div>
         </form>
-        {id && <Button className='deleteBtn' variant="contained" color='error' onClick={async() => {
-            const yes = window.confirm("are u shure")
-            if(yes){
-                await deleteClient(id)
-                navigate('/')
-            }
-        }}>Delete</Button>}
         </section>
     )
 }
