@@ -15,7 +15,7 @@ function Header({id}) {
                 <Button type='submit' variant="contained" color='success'><Link to='/create-client'>Create</Link></Button>
             :
             <Button variant="contained" color='error' onClick={async() => {
-                const yes = window.confirm("are u shure")
+                const yes = window.confirm("Do you want delete this client?")
                 if(yes){
                     await deleteClient(id)
                     navigate('/')

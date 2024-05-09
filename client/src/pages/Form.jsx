@@ -20,6 +20,7 @@ const Form = ({setId}) => {
     });
 
     useEffect(() => {
+        setError('')
         async function loadTask(){
             if(id){
                 setId(id)
@@ -55,27 +56,27 @@ const Form = ({setId}) => {
         }
     };
 
-    const onSubmit  = async (data) => {
-        if(id){
-            try{
-                await updateClient(data,id)
-            }catch(error){
-                console.log('holaa')
-            }
-        }else{
-            try {
-                await createClient(data);
-              } catch (error) {
-                setError('Please Check your data, somenthin is wrong')
-              }
+    const onSubmit = handleSubmit(async (data) => {
+        try {
+          if (id) {
+            await updateClient(data, id);
+          } else {
+            await createClient(data);
+          }
+          setError('');
+          navigate('/');
+        } catch (error) {
+            const responseData = error.response.data;
+            Object.keys(responseData).forEach(key => {
+            setError(responseData[key])
+            });
         }
-        //navigate('/')
-    }
+      });
 
     return(
         <section className='formSection'>
             <h1>CREATE A NEW CLIENT</h1>
-            <form action="" onSubmit={handleSubmit(onSubmit)}>
+            <form action="" onSubmit={onSubmit}>
             <Input 
             name='name'
             label='Name'
@@ -176,9 +177,13 @@ const Form = ({setId}) => {
             <Button type='submit' variant="contained" color='success' onClick={onSubmit}>Save</Button>
             </div>
         </form>
-        <div className='error'>
+        {error ?
+            <div className='error'>
                 <h1>{error}</h1>
-        </div>
+            </div>
+        :
+        <></>
+        }
         </section>
     )
 }

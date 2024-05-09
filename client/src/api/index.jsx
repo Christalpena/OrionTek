@@ -9,6 +9,10 @@ export const getAllCLients = () => {
     return clientApi.get('/')
 }
 
+/**
+ * 
+ * @returns A list with all the clients
+ */
 export function ListClients (){
     const [clients,setClients] = useState([])
     useEffect(() => {
@@ -21,11 +25,20 @@ export function ListClients (){
 
     return clients
 }
-
+/**
+ * 
+ * @param {*} id 
+ * @returns The client that was obtained by the id
+ */
 export const getClientById = (id) => {
     return clientApi.get(`/${id}`)
 }
 
+/**
+ * 
+ * @param {*} data An array of objects
+ * @returns this function create a client
+ */
 export const createClient = async (data) => {
     const {name,last_name,phone,email} = data
     const formData = new FormData();
@@ -42,10 +55,16 @@ export const createClient = async (data) => {
         } 
         return clientResponse.data; 
     } catch (error) {
-        throw error;
+        throw error
     }
 
 }
+/**
+ * 
+ * @param {*} data the new data
+ * @param {*} id the client id
+ * @returns cUpdate an existing client in the database
+ */
 export const updateClient = async (data,id) => {
     const {name,last_name,phone,email} = data
     const formData = new FormData();
@@ -63,17 +82,14 @@ export const updateClient = async (data,id) => {
     } 
     return clientResponse.data; 
     } catch (error) {
-        throw error;
+        console.log(error);
     }
 }
+
+
 export const deleteClient = (id) => {
     return clientApi.delete(`/${id}/`)
 }
-
-
-
-
-
 
 
 
@@ -84,6 +100,10 @@ export const getAllAddresses = () => {
     return addressApi.get('/')
 }
 
+/**
+ * 
+ * @returns All the addresses in the data base
+ */
 export function LisAddresses (){
     const [addresses,setAddresses] = useState([])
     useEffect(() => {
@@ -97,10 +117,16 @@ export function LisAddresses (){
     return addresses
 }
 
+/**
+ * 
+ * @param {*} data The addresses
+ * @param {*} id The client id
+ * @returns Create a new (few) addresses in the data base
+ */
 export const createAddresses = (data,id) => {
     const addresses = data.addresses;
 
-    for(const address of addresses){
+    addresses.map((address) => {
         const formData = new FormData();
         formData.append('address',address.address)
         formData.append('apartment',address.apartment)
@@ -110,13 +136,18 @@ export const createAddresses = (data,id) => {
         formData.append('zip_code',address.zip_code)
         formData.append('client',id)
         return addressApi.post('/',formData)
-    }
+    })
 }
 
-const updateAddresses = (data,clientId) => {
-    const addresses = data.addresses;
+/**
+ * 
+ * @param {*} data The new address data
+ * @param {*} clientId 
+ */
+const updateAddresses = async (data,clientId) => {
+    const addresses = await data.addresses;
 
-    addresses.map((address) => {
+    addresses.map((address)  => {
         console.log(address)
         if(address.addressId){
             const formData = new FormData();
@@ -130,11 +161,20 @@ const updateAddresses = (data,clientId) => {
             formData.append('client',clientId)
             addressApi.put(`/${address.addressId}/`,formData)
         }else{
-            createAddresses(data,clientId)
+            createAddresses(data = {'addresses' : [{
+                'id':address.addressId,
+                'address':address.address,
+                'apartment':address.apartment,
+                'city':address.city,
+                'state':address.state,
+                'country':address.country,
+                'zip_code':address.zip_code,
+                'client':clientId
+            }]},clientId)
         }
     })
 
-    }
+}
 
 
 export const deleteAddress = (addressId) => {

@@ -37,14 +37,14 @@ form{
     justify-content: space-around;
     flex-wrap: wrap;
     margin: auto;
-    gap: 10px;
+    gap: 20px;
 }
 
 form > div{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    gap: 10px;
+    gap: 20px;
 }
 
 .createBtn{
@@ -70,7 +70,7 @@ form > div{
 
 }
 .card{
-    width: 450px;
+    width: 448px;
     padding: 10px;
     border-radius: 10px !important;
 }
