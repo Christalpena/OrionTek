@@ -1,6 +1,6 @@
 import {useForm, useFieldArray } from 'react-hook-form'
 import Input from '../components/input'
-import { ListClients, createClient, deleteClient,getClientById, updateClient,createAddresses } from '../api'
+import { createClient, deleteClient,getClientById, updateClient,LisAddresses } from '../api'
 import { Button } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
@@ -8,45 +8,54 @@ import { useEffect } from 'react'
 // eslint-disable-next-line react/prop-types
 const Form = () => {
     const {id} = useParams()
-    const clients = ListClients()
+    const addresses = LisAddresses()
     const navigate = useNavigate()
-    const {register,handleSubmit,control,setValue} = useForm({defaultValues: {
-        addresses : [{
-            address: '',
-            apartment: '',
-            city: '',
-            state: '',
-            country: '',
-            zip_code : 0
-        }]
-    }})
+    const {register,handleSubmit,control,setValue} = useForm()
 
     const { fields, append, remove } = useFieldArray({
         name: "addresses",
         control
     });
 
+    const addNewAddress = (data) => {
+        console.log(data)
+        data.map((address) => {
+            append({
+                id: address.id,
+                address: address.address,
+                apartment: address.apartment,
+                city: address.city,
+                state: address.state,
+                country: address.country,
+                zip_code: address.zip_code
+            });
+        })
+    };
+
     useEffect(() => {
         async function loadTask(){
             if(id){
                 const response = await getClientById(id)
-                console.log(response)
+                console.log(response.data)
                 setValue('name', response.data.name)
                 setValue('email', response.data.email)
                 setValue('phone', response.data.phone)
                 setValue('last_name', response.data.last_name)
+                const clientAddresses = addresses.filter(address => address.client == id)
+                addNewAddress(clientAddresses)
             }
         }
         loadTask()
-    })
+    },[id])
 
     const onSubmit = handleSubmit(data => {
         if(id){
+            console.log('holaa')
             updateClient(data,id)
         }else{
             createClient(data)
         }
-        //navigate('/')
+        navigate('/')
     })
 
     return(
@@ -78,7 +87,7 @@ const Form = () => {
             type='number'
             />
             <h1>ADDRESS INFORMATION</h1>
-            {fields.map((addresses,index)=> {
+            {fields && fields.map((addresses,index)=> {
             return(
                 <div key={addresses.id}>
                 <Input
@@ -128,7 +137,7 @@ const Form = () => {
                 label='Zip Code'
                 type='text'
                 />
-                <Button className='removeAddressBtn' variant="contained" color='error' type='button' onClick={() => remove(index)}>Remove Address</Button>
+                <Button className='deleteBtn' variant="contained" color='error' type='button' onClick={() => remove(index)}>Remove Address</Button>
                 </div>
             )
             })}
@@ -139,7 +148,7 @@ const Form = () => {
             <Button type='submit' variant="contained" color='success' onClick={onSubmit}>Create</Button>
             </div>
         </form>
-        {id && <Button variant="contained" color='error' onClick={async() => {
+        {id && <Button className='deleteBtn' variant="contained" color='error' onClick={async() => {
             const yes = window.confirm("are u shure")
             if(yes){
                 await deleteClient(id)

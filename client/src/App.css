@@ -1,6 +1,19 @@
 body{
     margin: 0%;
     font-family:sans-serif;
+    background-color: #FBF6EE;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+    background-color: #FFB534 ;
+    padding: 0rem 2rem;
+    align-items: center;
+}
+
+header > button a{
+    color: white;
+    text-decoration: none;
 }
 .formSection{
     text-align: center;
@@ -24,7 +37,7 @@ form > div{
 .input {
     width: 45%;
 }
-.removeAddressBtn{
+.deleteBtn{
     flex-grow: 0.95;
 }
 .clientSection{
