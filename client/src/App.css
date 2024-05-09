@@ -1,15 +1,25 @@
 body{
     margin: 0%;
     font-family:sans-serif;
-    background-color: #FBF6EE;
+    background-color: white;
     padding-bottom: 5rem;
 }
 header{
     display: flex;
     justify-content: space-between;
-    background-color: #FFB534 ;
-    padding: 0rem 2rem;
+    background-color: #EF8D32 ;
+    padding: 0rem 6rem;
     align-items: center;
+    height: 80px;
+}
+.logoContainer{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+}
+.logo{
+    height: 80px;
 }
 
 header > button a{
@@ -22,7 +32,7 @@ header > button a{
 
 }
 form{
-    width: 50%;
+    width: 60%;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -51,11 +61,63 @@ form > div{
     flex-grow: 0.95;
 }
 .clientSection{
-    padding: 2rem 5rem;
+    padding: 2rem 6rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
     flex-wrap: wrap;
+    gap: 20px;
+    align-items: stretch;
+
 }
 .card{
-    width: 300px;
+    width: 450px;
+    padding: 10px;
+    border-radius: 10px !important;
+}
+
+.cardBtns button{
+    width: 50%;
+}
+
+.error{
+    color: red;
+    font-size: small;
+    width: 48%;
+    margin: auto;
+    border-radius: 4px;
+}
+
+@media screen and (max-width:780px){
+    form{
+        width: 70%;
+    }
+    .logoContainer{
+        font-size: small ;
+
+    }
+    header{
+        padding: 0rem 2rem;
+
+    }
+    .clientSection{
+        padding: 2rem 2rem;
+    }
+}
+
+@media screen and (max-width:605px){
+    .logoContainer{
+        font-size: 9px;
+    }
+    .logo{
+        height: 50px;
+    }
+    .clientSection{
+        flex-direction: column;
+    }
+    .card{
+        width: auto;
+    }
+    .cardBtns button{
+        width: auto;
+    }
 }

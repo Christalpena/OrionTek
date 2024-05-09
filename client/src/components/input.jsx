@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 
 // eslint-disable-next-line react/prop-types
-export default function Input({register,name,label,type,index}) {
+export default function Input({register,name,label,type,index,placeholder}) {
 
   return (
     <TextField
@@ -13,6 +13,9 @@ export default function Input({register,name,label,type,index}) {
     InputProps={{
         startAdornment: <InputAdornment position="start"></InputAdornment>,
     }}
+    placeholder={placeholder ? placeholder : ''}
+        
+
 />
   );
 }

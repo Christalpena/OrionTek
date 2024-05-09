@@ -7,10 +7,10 @@ function Header({id}) {
     const navigate = useNavigate();
     return (
         <header>
-            <div>
-                <img src="" alt="" />
-                <h1>OrionTek</h1>
-            </div>
+            <Link to='/' className="logoContainer">
+                <img className="logo" src="./public/logo.png" alt="" />
+                <h1>Track Clients</h1>
+            </Link>
             {!id ? 
                 <Button type='submit' variant="contained" color='success'><Link to='/create-client'>Create</Link></Button>
             :

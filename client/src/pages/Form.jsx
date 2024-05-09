@@ -3,15 +3,16 @@ import Input from '../components/input'
 import { createClient,getClientById, updateClient,LisAddresses, deleteAddress } from '../api'
 import { Button } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+
 
 // eslint-disable-next-line react/prop-types
 const Form = ({setId}) => {
+    const [error,setError] = useState()
     const {id} = useParams()
-    const addresses = LisAddresses()
-    console.log(id)
-    const navigate = useNavigate()
-    const {register,handleSubmit,control,setValue,reset} = useForm()
+    const addresses = LisAddresses();
+    const navigate = useNavigate();
+    const {register,handleSubmit,control,setValue,reset} = useForm();
 
     const { fields, append, remove } = useFieldArray({
         name: "addresses",
@@ -20,11 +21,9 @@ const Form = ({setId}) => {
 
     useEffect(() => {
         async function loadTask(){
-            
             if(id){
                 setId(id)
                 const response = await getClientById(id)
-                console.log(response.data)
                 setValue('name', response.data.name)
                 setValue('email', response.data.email)
                 setValue('phone', response.data.phone)
@@ -47,48 +46,63 @@ const Form = ({setId}) => {
         loadTask()
     },[id,addresses])
 
-    const deleteAddss = (id,index) =>{
-        deleteAddress(id)
-        remove(index)
-    }
-
-    const onSubmit = handleSubmit(data => {
+    const deleteFunction  = (id,index) =>{
         if(id){
-            console.log('holaa')
-            updateClient(data,id)
+            deleteAddress(id);
+            remove(index);
         }else{
-            createClient(data)
+            remove(index);
         }
-        navigate('/')
-    })
+    };
+
+    const onSubmit  = async (data) => {
+        if(id){
+            try{
+                await updateClient(data,id)
+            }catch(error){
+                console.log('holaa')
+            }
+        }else{
+            try {
+                await createClient(data);
+              } catch (error) {
+                setError('Please Check your data, somenthin is wrong')
+              }
+        }
+        //navigate('/')
+    }
 
     return(
         <section className='formSection'>
             <h1>CREATE A NEW CLIENT</h1>
-            <form action="" onSubmit={onSubmit}>
+            <form action="" onSubmit={handleSubmit(onSubmit)}>
             <Input 
             name='name'
             label='Name'
             register={register}
             type='text'
+            placeholder='Maria'
             />
             <Input 
             name='last_name'
             label='Last Name'
             register={register}
             type='text'
+            placeholder='Antonieta'
             />
             <Input 
             name='email'
             label='Email'
             register={register}
             type='email'
+            placeholder='mariaantonia18@gmail.com'
             />
             <Input 
             name='phone'
             label='Phone'
             register={register}
-            type='number'
+            type='tel'
+            placeholder='+18098795133'
             />
             <h1>ADDRESS INFORMATION</h1>
             {fields.map((addresses,index)=> {
@@ -100,6 +114,8 @@ const Form = ({setId}) => {
                 name='address'
                 label='Address'
                 type='text'
+                placeholder='123 Main Street'
+                
                 />
 
                 <Input
@@ -108,6 +124,7 @@ const Form = ({setId}) => {
                 name='apartment'
                 label='Apartment'
                 type='text'
+                placeholder='Apt 101'
                 />
                 
                 <Input
@@ -116,6 +133,7 @@ const Form = ({setId}) => {
                 name='city'
                 label='City'
                 type='text'
+                placeholder='Cityville'
                 />
 
                 <Input
@@ -124,6 +142,7 @@ const Form = ({setId}) => {
                 name='state'
                 label='State'
                 type='text'
+                placeholder='Stateville'
                 />
 
                 <Input
@@ -132,6 +151,7 @@ const Form = ({setId}) => {
                 name='country'
                 label='Country'
                 type='text'
+                placeholder='Countryland'
                 />
 
                 <Input
@@ -140,14 +160,11 @@ const Form = ({setId}) => {
                 name='zip_code'
                 label='Zip Code'
                 type='text'
+                placeholder='12345'
                 />
-                {addresses.addressId ? 
-                <Button className='deleteBtn' variant="contained" color='error' type='button' 
-                onClick={() => deleteAddss(addresses.addressId,index)}>Remove Address</Button>
-                :
-                <Button className='deleteBtn' variant="contained" color='error' type='button' 
-                onClick={() => remove(index)}>Remove Address</Button>
-                }
+                <Button className='deleteBtn' variant="contained" color='error' type='button' onClick={() => deleteFunction(addresses.addressId,index)}>
+                Remove Address
+                </Button>
                 </div>
 
             )
@@ -159,6 +176,9 @@ const Form = ({setId}) => {
             <Button type='submit' variant="contained" color='success' onClick={onSubmit}>Save</Button>
             </div>
         </form>
+        <div className='error'>
+                <h1>{error}</h1>
+        </div>
         </section>
     )
 }
